@@ -2,9 +2,6 @@
 #include "m3pi.h"
 #include "physcom.h"
 
-#define DEBUG false
-
-mbed::Serial serial(USBTX, USBRX);
 physcom::M3pi robot;
 
 void toRange(float &var, const float min, const float max) {
@@ -39,7 +36,7 @@ float getLinePosition(const int *sensorData, const int *sensorDataOld,
 
   // If no line is detected we set an extremum line position based on old data
   if (!lineDetected) {
-    if (DEBUG) serial.printf("[INTERRUPT] No line detected\n");
+  {
     if (linePositionOld < (rangeCenter / (rangeMin + rangeMax))) {
       return 1;
     } else {
@@ -62,7 +59,7 @@ bool handleTJunction(const int *optoData) {
 }
 
 int main() {
-  if (DEBUG) serial.baud(115200);
+{
 
   // Motor speeds
   const float MOTOR_MAX = 0.3;
@@ -75,9 +72,7 @@ int main() {
 
   wait_ms(1000);
 
-  if (DEBUG) serial.printf("[START] Calibration of QTR8 sensor array\r\n");
   robot.sensor_auto_calibrate();
-  if (DEBUG) serial.printf("[END] Calibration of QTR8 sensor array\r\n");
 
   float motorR;
   float motorL;
@@ -95,18 +90,14 @@ int main() {
   while (true) {
     // Get sensor data into "sensorData"
     robot.calibrated_sensors(sensorData);
-    serial.printf("[Data] %d %d %d %d %d\r\n", sensorData[0], sensorData[1],
-                  sensorData[2], sensorData[3], sensorData[4]);
 
     // Stop at T junction
     if (handleTJunction(sensorData)) {
-      if (DEBUG) serial.printf("[INTERRUPT] Reached T junction\r\n");
       return 0;
     }
 
     // Get the position of the line.
     linePosition = getLinePosition(sensorData, sensorDataOld, linePositionOld);
-    if (DEBUG) serial.printf("[NEW] Line position = %.2f\r\n", linePosition);
 
     // PID computation
     // -------------------------------------------------------------------------
@@ -120,7 +111,6 @@ int main() {
 
     // Compute the controller output (PID output)
     controlVariable = (proportional * KP) + (integral * KI) + (derivative * KD);
-    if (DEBUG) serial.printf("[PID] Control var = %.4f\r\n", controlVariable);
     // -------------------------------------------------------------------------
 
     // Compute new speeds
@@ -132,9 +122,5 @@ int main() {
     // Control motors
     robot.activate_motor(0, motorL);
     robot.activate_motor(1, motorR);
-    if (DEBUG) {
-      serial.printf("[MOTOR L] Motor power = %.2f \r\n", motorL);
-      serial.printf("[MOTOR R] Motor power = %.2f \r\n", motorR);
-    }
   }
 }
