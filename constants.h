@@ -4,7 +4,7 @@ static const float MOTOR_MIN = 0.0;
 
 // PID tuning parameters
 static const float KP = 1;
-static const float KI = 0;
+// static const float KI = 0;
 static const float KD = 80;
 
 // Optosensor parameters

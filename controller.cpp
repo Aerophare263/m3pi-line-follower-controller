@@ -65,7 +65,8 @@ int main() {
   int sensorData[5];
   int sensorDataOld[5] = {0, 0, 0, 0, 0};
 
-  float derivative, proportional, integral = 0;
+  float derivative, proportional;
+  // float integral = 0;
   wait_ms(100);
 
   while (true) {
@@ -84,13 +85,15 @@ int main() {
     // Get the position of the line.
     linePosition = getLinePosition(sensorData, sensorDataOld, linePositionOld);
 
-    // PID computation
+    // PD computation
     // -------------------------------------------------------------------------
     proportional = linePosition;
+    // integral += proportional;
     derivative = linePosition - linePositionOld;
-    integral += proportional;
 
-    controlVariable = (proportional * KP) + (integral * KI) + (derivative * KD);
+    controlVariable = proportional * KP;
+    // controlVariable += integral * KI;
+    controlVariable += derivative * KD;
     // -------------------------------------------------------------------------
 
     // Remember the last position.
