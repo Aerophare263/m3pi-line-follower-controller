@@ -39,9 +39,9 @@ float getLinePosition(const int *sensorData, const int *sensorDataOld,
   if (!lineDetected)
   {
     if (linePositionOld < (RANGE_CENTER / (RANGE_MIN + RANGE_MAX)))
-      return 1;
+      return -1;
     else
-      return 0;
+      return 1;
   }
   // Normalize (-1 to 1) and return
   return ((((average / static_cast<float>(sum)) / RANGE_MAX) * 2) - 1);
