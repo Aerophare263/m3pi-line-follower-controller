@@ -4,8 +4,7 @@
 
 physcom::M3pi robot;
 
-void toRange(float &var)
-{
+void toRange(float &var) {
   if (var > MOTOR_MAX)
     var = MOTOR_MAX;
   else if (var < MOTOR_MIN)
@@ -13,31 +12,26 @@ void toRange(float &var)
 }
 
 float getLinePosition(const int *sensorData, const int *sensorDataOld,
-                      const float &linePositionOld)
-{
+                      const float &linePositionOld) {
   bool lineDetected = false;
   uint32_t average = 0;
   uint16_t sum = 0;
   uint8_t relIndex = 0;
 
-  for (uint8_t i = 0; i < SENSOR_COUNT; i++)
-  {
+  for (uint8_t i = 0; i < SENSOR_COUNT; i++) {
     relIndex = i + SENSOR_FIRST_INDEX;
     // Ignore values below noise threshold
-    if (sensorData[relIndex] > NOISE_THRESHOLD)
-    {
+    if (sensorData[relIndex] > NOISE_THRESHOLD) {
       // Was line detected at all?
       if (sensorData[relIndex] > LINE_DETECTION_THRESHOLD)
         lineDetected = true;
-
       average += sensorData[relIndex] * 1000 * i;
       sum += sensorData[relIndex];
     }
   }
 
   // If no line is detected we set an extremum line position based on old data
-  if (!lineDetected)
-  {
+  if (!lineDetected) {
     if (linePositionOld < (RANGE_CENTER / (RANGE_MIN + RANGE_MAX)))
       return -1;
     else
@@ -47,21 +41,17 @@ float getLinePosition(const int *sensorData, const int *sensorDataOld,
   return ((((average / static_cast<float>(sum)) / RANGE_MAX) * 2) - 1);
 }
 
-bool handleTJunction(const int *optoData)
-{
-  bool shouldStop = false;
+bool detectTJunction(const int *optoData) {
+  bool detected = false;
   uint32_t sum = 0;
-  for (size_t i = 0; i < 5; i++)
-  {
+  for (size_t i = 0; i < 5; i++) {
     sum += optoData[i];
   }
-  shouldStop = sum > (5 * ABOVE_LINE_THRESHOLD) ||
-               (optoData[0] + optoData[4]) > (2 * ABOVE_LINE_THRESHOLD);
-  return shouldStop;
+  detected = sum > (5 * ABOVE_LINE_THRESHOLD);
+  return detected;
 }
 
-int main()
-{
+int main() {
   wait_ms(1000);
   robot.sensor_auto_calibrate();
 
@@ -78,16 +68,18 @@ int main()
   float derivative, proportional, integral = 0;
   wait_ms(100);
 
-  while (true)
-  {
+  while (true) {
     robot.calibrated_sensors(sensorData);
 
     // Right turn bias if extremas are detected
     if (sensorData[4] > sensorData[0]) sensorData[0] = 0;
 
     // Stop at T junction
-    if (handleTJunction(sensorData))
+    if (detectTJunction(sensorData)) {
+      robot.activate_motor(0, 0);
+      robot.activate_motor(1, 0);
       return 0;
+    }
 
     // Get the position of the line.
     linePosition = getLinePosition(sensorData, sensorDataOld, linePositionOld);
