@@ -82,6 +82,9 @@ int main()
   {
     robot.calibrated_sensors(sensorData);
 
+    // Right turn bias if extremas are detected
+    if (sensorData[4] > sensorData[0]) sensorData[0] = 0;
+
     // Stop at T junction
     if (handleTJunction(sensorData))
       return 0;
