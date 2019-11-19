@@ -8,7 +8,7 @@
 </h3>
 <p>
   This code has been calibrated and written specifically for the 
-  <a href="https://www.pololu.com/product/2151">m3pi</a> robot but with minor 
+  <a href="https://www.pololu.com/product/2151" target="_blank">m3pi</a> robot but with minor 
   modifications to data acquisition and recalibration of constants it should work 
   for any other (similar) robot.
 </p>
@@ -19,7 +19,7 @@
 <p>
   The controller works by calculating a line position based on data received from 
   5 bottom mounted reflectance sensors then feeding this position into the 
-  <a href="https://en.wikipedia.org/wiki/PID_controller">PD 
+  <a href="https://en.wikipedia.org/wiki/PID_controller" target="_blank">PD 
   control loop</a> which calculates a control variable, namely the speed delta. 
   Using this value, the left and right motor speeds are determined and the whole 
   process is repeated.
@@ -32,3 +32,14 @@
   <li>Detect and stop at a T junction</li>
   <li>Right turn bias to avoid misdetection of adjacent lines</li>
 </ul>
+
+<h3 allign="right">
+  Misc:
+</h3>
+<ul>
+  <li><a href="https://os.mbed.com/ide/import-program/https://github.com/Aerophare263/m3pi-line-follower-controller;mode:lib" target="_blank">Import into Mbed Compiler</a></li>
+  <li><a href="https://www.youtube.com/watch?v=n6y1cu0CZug" target="_blank">Demo</a></li>
+</ul>
+
+
+
