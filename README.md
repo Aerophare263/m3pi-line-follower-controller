@@ -39,6 +39,7 @@
 <ul>
   <li><a href="https://os.mbed.com/ide/import-program/https://github.com/Aerophare263/m3pi-line-follower-controller;mode:lib" target="_blank">Import into Mbed Compiler</a></li>
   <li><a href="https://www.youtube.com/watch?v=n6y1cu0CZug" target="_blank">Demo</a></li>
+  <li>Libraries used: <a href="https://os.mbed.com/users/maspadaru/code/physcom/" target="_blank">PhysCom</a>, <a href="https://os.mbed.com/users/mbed_official/code/mbed/" target="_blank">MBED</a></li>
 </ul>
 
 
